@@ -1,8 +1,7 @@
-<% provide(:base_title, 'Ruby on Rails Tutorial Sample App') %>
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= yield(:base_title) %> | <%= yield(:title) %></title>
+	<title><%= full_title(yield(:title)) %></title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
