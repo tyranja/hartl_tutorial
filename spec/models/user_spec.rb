@@ -124,5 +124,11 @@ describe User do
 		end
 	end
 
+	describe "remember_token" do
+		before { @user.save }
+		#it { @user.remember_token.should_not be_blank }
+		its(:remember_token) { should_not be_blank }
+	end
+
 end 
 
