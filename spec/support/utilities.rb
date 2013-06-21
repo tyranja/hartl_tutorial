@@ -6,5 +6,9 @@ def valid_signin(user)
   click_button "Sign in"
 end
 
-RSpec::M
+RSpec::Matchers.define :have_error_meassage do |message|
+  match do |page|
+    page.should have_selector('div.alert.alert-error', text: message)
+  end
+end
 
