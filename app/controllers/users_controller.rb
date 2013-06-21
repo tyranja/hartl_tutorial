@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_filter :signed_in_user, only: [:edit, :update]
+
   def new
   	@user = User.new
   end
@@ -10,9 +12,9 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
+      sign_in @user
       flash[:success] = "Welcome to the Sample App!"
       redirect_to @user
-      # Handle a successful save.
     else
       render 'new'
     end
@@ -33,4 +35,10 @@ class UsersController < ApplicationController
     end
   end
 
+private
+
+  def signed_in_user
+    redirect_to signin_url, notice: "Please sign in." unless signed_in?
+  end
+    
 end
