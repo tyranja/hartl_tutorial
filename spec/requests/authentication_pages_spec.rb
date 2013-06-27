@@ -50,6 +50,10 @@ describe "Authentication" do
   describe "authorization" do
 
     describe "for non-signed-in users" do
+      it { should_not have_link('Profile') }
+      it { should_not have_link('Settings') }
+
+
       let(:user) { FactoryGirl.create(:user) }
 
       describe "in the Users controller" do
