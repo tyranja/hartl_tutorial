@@ -73,7 +73,7 @@ describe "Authentication" do
 
       let(:user) { FactoryGirl.create(:user) }
 
-      describe "in the Users controller" do
+      describe "in the users controller" do
 
         describe "visiting the edit page" do
           before { visit edit_user_path(user) }
@@ -104,9 +104,22 @@ describe "Authentication" do
           it "should render the desired proteced page" do
             page.should have_selector('title', text: 'Edit user')
           end
+
+          describe "when signing in again" do
+            before do
+              delete signout_path
+              visit signin_path
+              fill_in "Email",  with: user.email
+              fill_in "Password", with: user.password
+              click_button "Sign in"
+            end
+
+            it "should render the default (profile) page" do
+              page.should have_selector('title', text: user.name)
+            end
+          end
         end
       end
-      
     end
 
     describe "as wrong user" do
@@ -136,5 +149,17 @@ describe "Authentication" do
         specify { response.should redirect_to(root_path) }
       end
     end
+
+
+    describe "admin user" do
+      let(:admin) { FactoryGirl.create(:admin) }
+      before { sign_in admin }
+
+      describe "should not be able to destroy themselves" do
+        before { delete user_path(admin)}
+        specify { response.should redirect_to(root_path) }
+      end
+    end
+
   end
 end
