@@ -49,6 +49,23 @@ describe "Authentication" do
 
   describe "authorization" do
 
+    describe "for signed in users" do
+      let(:user) { FactoryGirl.create(:user) }
+      before { sign_in user }
+
+      describe "using a 'new' action" do
+        before { get new_user_path }
+        specify { response.should redirect_to(root_path) }
+        specify { flash[:notice]. should eql("Already logged in") }
+      end
+
+      describe "using a 'create' action" do
+        before { post users_path }
+        specify { response.should redirect_to(root_path) }
+        specify { flash[:notice]. should eql("Already logged in") }
+      end
+    end
+
     describe "for non-signed-in users" do
       it { should_not have_link('Profile') }
       it { should_not have_link('Settings') }
