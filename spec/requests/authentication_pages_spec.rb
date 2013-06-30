@@ -145,34 +145,30 @@ describe "Authentication" do
       before { sign_in non_admin }
 
       describe "submitting a DELETE request to the Users#destroy action" do
-        before { delete user_path(user) }
+        before {delete user_path(user) }
         specify { response.should redirect_to(root_path) }
       end
     end
 
+    describe "admin user" do
+      let(:admin)     { FactoryGirl.create(:admin) }
+      let(:non_admin) {FactoryGirl.create(:user) }
 
-    # TODO: 
+      before { sign_in admin }
 
-    # describe "admin user" do
-    #   let(:admin) { FactoryGirl.create(:admin) }
-    #   let(:non_admin) {FactoryGirl.create(:user) }
-    #   before { sign_in admin }
+      describe "should not be able to destroy themselves" do
+        before { delete user_path(admin) }
 
-    #   describe "should not be able to destroy themselves" do
-    #     before { delete user_path(admin) }
-    #     specify { response.should redirect_to(users_path) }
-    #   end
+        specify { response.should redirect_to(users_path) }
+        specify { flash[:error].should eql("You can not destroy yourself as an admin.") }
+      end
 
-    #   describe "should be able to destroy user" do
-    #     before do
-    #       visit users_path
-    #       click_link('delete')
-    #       # delete user_path(non_admin)
-    #     end
+      describe "should be able to destroy user" do
+        before { delete user_path(non_admin) }
 
-    #     specify { response.should redirect_to(users_path) }
-    #     specify { flash[:notice]. should eql("User destroyed.") }
-    #   end
-    # end  
+        specify { response.should redirect_to(users_path) }
+        specify { flash[:success].should eql("User destroyed.") }
+      end
+    end  
   end
 end
